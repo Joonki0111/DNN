@@ -35,7 +35,7 @@ class DNN
 
     std::pair<double, double> learning_function(const std::vector<std::vector<double>> &x, const std::vector<int> &y)
     {
-        for(int i = 0; i < 10000; i++)
+        for(int i = 0; i < 50000; i++)
         {
 
             sigma_w_gradient += (2 * std::pow(x[count_y][count_x],2) * w) + (2 * x[count_y][count_x] * b) - (2 * x[count_y][count_x] * y[count_y]);
@@ -83,13 +83,13 @@ class DNN
         int count_y = 0;
         int count_x = 0;
         
-        for(int i = 0; i < 10000; i++)
+        for(int i = 0; i < 50000; i++)
         {
             sigma_w_gradient += -((y[count_y]- 1 / (1+pow(M_E, -(w * x_batch[count_y][count_x] + b)))) * x_batch[count_y][count_x]);
             sigma_b_gradient += -(y[count_y]- 1 / (1+pow(M_E, -(w * x_batch[count_y][count_x] + b))));
  
-            w -= (0.0001*sigma_w_gradient);
-            b -= (0.0001*sigma_b_gradient);
+            w -= (0.000001*sigma_w_gradient);
+            b -= (0.000001*sigma_b_gradient);
 
             if(count_y == (x_batch.size() - 1) && count_x == (x_batch[0].size() - 1))
             {
