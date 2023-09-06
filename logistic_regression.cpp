@@ -83,7 +83,7 @@ class DNN
         int count_y = 0;
         int count_x = 0;
         
-        for(int i = 0; i < 50000; i++)
+        for(int i = 0; i < 25000; i++)
         {
             sigma_w_gradient += -((y[count_y]- 1 / (1+pow(M_E, -(w * x_batch[count_y][count_x] + b)))) * x_batch[count_y][count_x]);
             sigma_b_gradient += -(y[count_y]- 1 / (1+pow(M_E, -(w * x_batch[count_y][count_x] + b))));
@@ -93,8 +93,8 @@ class DNN
 
             if(count_y == (x_batch.size() - 1) && count_x == (x_batch[0].size() - 1))
             {
-                sigma_w_gradient /= 6;
-                sigma_b_gradient /= 6;
+                sigma_w_gradient /= 200;
+                sigma_b_gradient /= 200;
             }
 
             if((i % ((x_batch.size()*x_batch[0].size()) - 1)) == 0)
@@ -154,7 +154,7 @@ int main()
             for (int z = 0; z < column; z++) {
                 outputFile << "(" << x_batch[i][z] << "," << i << ")" << "\n";
             }
-            outputFile << "\n"; // 각 행의 끝에 개행 문자 추가
+            outputFile << "\n"; 
         }
         outputFile.close();
     } 
