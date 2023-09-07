@@ -41,17 +41,15 @@ class DNN
             sigma_w_gradient += (2 * std::pow(x[count_y][count_x],2) * w) + (2 * x[count_y][count_x] * b) - (2 * x[count_y][count_x] * y[count_y]);
             sigma_b_gradient += (2 * x[count_y][count_x] * w) - (2 * y[count_y]) + (2 * b);
 
-            w = w - (0.0001*sigma_w_gradient);
-            b = b - (0.0001*sigma_b_gradient);
 
             if(count_y == (x.size() - 1) && count_x == (x[0].size() - 1))
             {
-                sigma_w_gradient /= 6;
-                sigma_b_gradient /= 6;
-            }
+                sigma_w_gradient /= x.size() * x[0].size();
+                sigma_b_gradient /= x.size() * x[0].size();
 
-            if((i % ((x.size()*x[0].size()) - 1)) == 0)
-            {
+                w = w - (0.0001*sigma_w_gradient);
+                b = b - (0.0001*sigma_b_gradient);
+
                 sigma_w_gradient = 0.0;
                 sigma_b_gradient = 0.0;
             }
@@ -83,25 +81,23 @@ class DNN
         int count_y = 0;
         int count_x = 0;
         
-        for(int i = 0; i < 25000; i++)
+        for(int i = 0; i < 100000000; i++)
         {
             sigma_w_gradient += -((y[count_y]- 1 / (1+pow(M_E, -(w * x_batch[count_y][count_x] + b)))) * x_batch[count_y][count_x]);
             sigma_b_gradient += -(y[count_y]- 1 / (1+pow(M_E, -(w * x_batch[count_y][count_x] + b))));
  
-            w -= (0.000001*sigma_w_gradient);
-            b -= (0.000001*sigma_b_gradient);
 
             if(count_y == (x_batch.size() - 1) && count_x == (x_batch[0].size() - 1))
             {
-                sigma_w_gradient /= 200;
-                sigma_b_gradient /= 200;
-            }
+                sigma_w_gradient /= x_batch.size() * x_batch[0].size();
+                sigma_b_gradient /= x_batch.size() * x_batch[0].size();
 
-            if((i % ((x_batch.size()*x_batch[0].size()) - 1)) == 0)
-            {
+                w -= (0.001*sigma_w_gradient);
+                b -= (0.001*sigma_b_gradient);
+
                 sigma_w_gradient = 0.0;
                 sigma_b_gradient = 0.0;
-            }            
+            } 
 
             if((i % 1000) == 0)
             {
@@ -130,9 +126,8 @@ class DNN
 
 int main()
 {
-    //행x열
     int row = 2;
-    int column = 100; 
+    int column = 10; 
     double count = 1.0;
 
     std::vector<std::vector<double>> x_batch(row,std::vector<double>(column,0));
