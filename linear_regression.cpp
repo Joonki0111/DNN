@@ -45,8 +45,8 @@ class DNN
                 sigma_w_gradient /= x.size();
                 sigma_b_gradient /= x.size();
 
-                w = w - (lr * sigma_w_gradient);
-                b = b - (lr * sigma_b_gradient);
+                w -= (lr * sigma_w_gradient);
+                b -= (lr * sigma_b_gradient);
 
                 sigma_w_gradient = 0;
                 sigma_b_gradient = 0;
