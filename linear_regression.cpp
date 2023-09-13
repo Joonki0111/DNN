@@ -9,45 +9,54 @@ class DNN
     std::pair<double, double> output;
     double cost = 0;
 
-    DNN(const std::vector<int> &x_, const std::vector<int> &y_)
+    DNN(const std::vector<int> &x_, const std::vector<int> &y_, const int &epoch_, const float &lr_)
     {
         x = x_;
         y = y_;
+        epoch = epoch_;
+        lr = lr_;
         output = DNN::learning_function(x,y);
     }
 
     private:
     std::vector<int> x;
     std::vector<int> y;
-    double w = 1;
-    double b = 1;
-    double sigma_w_gradient = 1;
-    double sigma_b_gradient = 1;
-    int count = 0;
+
+    double w;
+    double b;
+
+    double sigma_w_gradient;
+    double sigma_b_gradient;
+
+    int count;
+
+    int epoch;
+    float lr;
 
     std::pair<double, double> learning_function(const std::vector<int> &x, const std::vector<int> &y)
     {
-        for(int i = 0; i < 5000; i++)
+        for(int i = 0; i < epoch; i++)
         {
             sigma_w_gradient += (2 * std::pow(x[count],2) * w) + (2 * x[count] * b) - (2 * x[count] * y[count]);
             sigma_b_gradient += (2 * x[count] * w) - (2 * y[count]) + (2 * b);
-            
-            if(count == 2)
+
+            if(count == (x.size() - 1))
             {
-                sigma_w_gradient /= 3.0;
-                sigma_b_gradient /= 3.0;
-                count -= 3;
+                sigma_w_gradient /= x.size();
+                sigma_b_gradient /= x.size();
+
+                w = w - (lr * sigma_w_gradient);
+                b = b - (lr * sigma_b_gradient);
+
+                sigma_w_gradient = 0;
+                sigma_b_gradient = 0;
             }
 
             count++;
 
-            w = w - (0.01*sigma_w_gradient);
-            b = b - (0.01*sigma_b_gradient);
-
-            if(((i + 1) % 3) == 0)
+            if(count == x.size())
             {
-                sigma_w_gradient = 0.0;
-                sigma_b_gradient = 0.0;
+                count = 0;
             }
 
             // if((i % 500) == 0)
@@ -64,12 +73,13 @@ class DNN
 
 int main()
 {
-    bool verify;
+    int epoch = 5000;
+    float lr = 0.01;
 
-    DNN data_obj({1,2,3},{2,4,6});
+    DNN data_obj({1,2,3},{2,4,6},epoch,lr);
 
-    std::cout << "The equation of the learning is : y = " << data_obj.output.first << "x + " << data_obj.output.second <<std::endl;
-    std::cout << "Final cost is : " << data_obj.cost << std::endl;
+    std::cout << "Equation : y = " << data_obj.output.first << "x + " << data_obj.output.second <<std::endl;
+    std::cout << "Cost : " << data_obj.cost << std::endl;
 
     return 0;
 }
