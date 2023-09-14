@@ -116,7 +116,7 @@ int main()
     std::cout << "Equation : y = " << data_obj.output.first << "x + " << data_obj.output.second << std::endl;
     std::cout << "Final cost : " << data_obj.cost << std::endl;
 
-    outputFile << "\n" << "y =" << data_obj.output.first << "x + " << data_obj.output.second << "\n";
+    outputFile << "\n" << "y = " << data_obj.output.first << "x + " << data_obj.output.second;
 
     return 0;
 }
