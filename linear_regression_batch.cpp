@@ -83,13 +83,13 @@ class DNN
 
 int main()
 {
-    int epoch = 1000;
+    int epoch = 100000;
     float lr = 0.01;
 
     int count = 1;
-    int y = 5;
 
     std::vector<std::vector<int>> x_batch(5,std::vector<int>(3,0));
+    std::vector<int> y_batch = {10,15,20,20,22};
 
     for(int i = 0; i < 5; i++)
     {
@@ -103,25 +103,20 @@ int main()
 
     std::ofstream outputFile("data/linear_regression_batch_data.txt");
 
-
     for (int i = 0; i < 5; i++) 
     {
         for (int z = 0; z < 3; z++) 
         {
-            outputFile << "(" << x_batch[i][z] << "," << y << ")" << "\n";
+            outputFile << "(" << x_batch[i][z] << "," << y_batch[i] << ")" << "\n";
         }
-        y += 5; 
     }
 
-
-    DNN data_obj(x_batch, {10,15,20,20,22}, epoch, lr);
+    DNN data_obj(x_batch, y_batch, epoch, lr);
 
     std::cout << "Equation : y = " << data_obj.output.first << "x + " << data_obj.output.second << std::endl;
     std::cout << "Final cost : " << data_obj.cost << std::endl;
 
-
-    outputFile << "y =" << data_obj.output.first << "x + " << data_obj.output.second << "\n";
-
+    outputFile << "\n" << "y =" << data_obj.output.first << "x + " << data_obj.output.second << "\n";
 
     return 0;
 }
