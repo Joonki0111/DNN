@@ -2,6 +2,7 @@
 #include <vector>
 #include <cmath>
 #include <utility> 
+#include <fstream>
 
 class DNN
 {
@@ -9,14 +10,20 @@ class DNN
     std::pair<double, double> output;
     double cost;
 
-    DNN(const std::vector<int> &x_1, const std::vector<int> &x_2, const std::vector<int> &x_3, const std::vector<int> &y_)
+    DNN(const std::vector<int> &x_1, const std::vector<int> &x_2, const std::vector<int> &x_3, const std::vector<int> &y_,
+         const int &epoch_, const float &lr_)
     {
+        epoch = epoch_;
+        lr = lr_;
+        
         for(int i = 0; i < 3; i++)
         {
             x_all.push_back(x_1[i]);
             x_all.push_back(x_2[i]);
             x_all.push_back(x_3[i]);
+            count_++;
         }
+
         y = y_;
         output = DNN::learning_function(x_all,y);
     }
@@ -27,42 +34,52 @@ class DNN
     std::vector<int> x3;
     std::vector<int> x_all;
     std::vector<int> y;
-    double w = 1;
-    double b = 1;
-    double sigma_w_gradient = 1;
-    double sigma_b_gradient = 1;
-    int count = 0;
+
+    double w;
+    double b;
+
+    double sigma_w_gradient;
+    double sigma_b_gradient;
+
+    int count;
+    int count_;
+
+    int epoch;
+    float lr;
 
     std::pair<double, double> learning_function(const std::vector<int> &x, const std::vector<int> &y)
     {
-        for(int i = 0; i < 5000; i++)
+        for(int i = 0; i < epoch; i++)
         {
             sigma_w_gradient += (2 * std::pow(x[count],2) * w) + (2 * x[count] * b) - (2 * x[count] * y[count]);
             sigma_b_gradient += (2 * x[count] * w) - (2 * y[count]) + (2 * b);
             
-            if(count == 2)
+            if(count == (count_-1))
             {
-                sigma_w_gradient /= 3.0;
-                sigma_b_gradient /= 3.0;
-                count -= 3;
+                sigma_w_gradient /= x.size();
+                sigma_b_gradient /= x.size();
+
+                w -= (lr * sigma_w_gradient);
+                b -= (lr * sigma_b_gradient);
+
+                sigma_w_gradient = 0;
+                sigma_b_gradient = 0;
             }
 
             count++;
 
-            w = w - (0.01*sigma_w_gradient);
-            b = b - (0.01*sigma_b_gradient);
-
-            if(((i + 1) % 3) == 0)
+            if(count == count_)
             {
-                sigma_w_gradient = 0.0;
-                sigma_b_gradient = 0.0;
+                count = 0;
             }
 
             // if((i % 500) == 0)
             // {
             //     std::cout << "w : " << w << "           " << "b : " << b << "           "  << "cost :" << (w * x[count] + b) - y[count] <<std::endl;
             // }
+
         }
+
         cost = (w * x[count] + b) - y[count];
 
         return std::make_pair(w,b);
@@ -72,11 +89,30 @@ class DNN
 
 int main()
 {
+    int epoch = 20000;
+    float lr = 0.1;
 
-    DNN data_obj({1,2,3},{4,5,6},{7,8,9},{10,15,20});
+    int x = 1;
+    int y = 10;
 
-    std::cout << "The equation of the learning is : y = " << data_obj.output.first << "x + " << data_obj.output.second <<std::endl;
-    std::cout << "Final cost is : " << data_obj.cost << std::endl;
+    std::ofstream outputFile("data/linear_regression_2_data.txt");
+
+    for (int i = 0; i < 3; i++) 
+    {
+        for (int z = 0; z < 3; z++) 
+        {
+            outputFile << "(" << x << "," << y << ")" << "\n";
+            x++;
+        }
+        y += 5;
+    }
+
+    DNN data_obj({1,2,3}, {4,5,6}, {7,8,9}, {10,15,20}, epoch, lr);
+
+    std::cout << "Equation : y = " << data_obj.output.first << "x + " << data_obj.output.second <<std::endl;
+    std::cout << "Final cost  : " << data_obj.cost << std::endl;
+
+    outputFile << "\n" << "y = " << data_obj.output.first << "x + " << data_obj.output.second;
 
     return 0;
 }

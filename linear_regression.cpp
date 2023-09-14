@@ -53,7 +53,6 @@ class DNN
             }
 
             count++;
-
             if(count == x.size())
             {
                 count = 0;
