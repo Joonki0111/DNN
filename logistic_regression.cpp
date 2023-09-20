@@ -21,7 +21,7 @@ class DNN
         y = y_;
 
         linear_epoch = linear_epoch_;
-        logistic_epoch = logistic_epoch;
+        logistic_epoch = logistic_epoch_;
 
         linear_lr = linear_lr_;
         logistic_lr = logistic_lr_;
